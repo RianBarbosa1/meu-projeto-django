@@ -1,0 +1,16 @@
+{% extends 'usuarios/base.html' %}
+
+{% block title %}Cadastro - Sistema Web{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+  <h2 class="mb-4">Cadastro de Usuário</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Cadastrar</button>
+    <a href="{% url 'login' %}" class="btn btn-link">Já tenho uma conta</a>
+  </form>
+</div>
+{% endblock %}
