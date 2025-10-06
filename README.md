@@ -53,7 +53,7 @@ Modelar e cadastrar dados de uma pessoa utilizando Django e exibir os dados em u
 
 ---
 
-### 📘 Exercício 3
+### 📘 Exercício 3 - RELACIONAMENTO ENTRE CLASSES
 Neste exercício, foi implementado um sistema de cadastro e visualização de pessoas e seus endereços utilizando Django.
 
 Funcionalidades implementadas:
