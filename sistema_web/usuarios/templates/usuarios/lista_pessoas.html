@@ -1,4 +1,4 @@
-{% extends 'usuarios/base.html' %}  <!-- Ou o base.html que você estiver usando -->
+{% extends 'usuarios/base.html' %}
 
 {% block content %}
 <div class="container mt-4">
@@ -25,8 +25,20 @@
                 <td>{{ pessoa.telefone }}</td>
                 <td>{{ pessoa.data_nascimento }}</td>
                 <td>{{ pessoa.rg }}</td>
-                <td>{{ pessoa.endereco }}</td>
-                <td>{{ pessoa.bairro }}</td>
+                <td>
+                    {% if pessoa.endereco %}
+                        {{ pessoa.endereco.rua }}, {{ pessoa.endereco.numero }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>
+                    {% if pessoa.endereco %}
+                        {{ pessoa.endereco.bairro }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
             <tr>

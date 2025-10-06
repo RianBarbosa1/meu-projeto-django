@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import CadastroForm
+from .forms import CadastroForm, PessoaForm, EnderecoForm
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -48,7 +48,7 @@ def erro_403_teste(request):
 
 @login_required(login_url='login')
 def lista_pessoas(request):
-    pessoas = Pessoa.objects.all()
+    pessoas = Pessoa.objects.select_related('endereco').all()
     return render(request, 'usuarios/lista_pessoas.html', {'pessoas': pessoas})
 
 
@@ -75,6 +75,34 @@ def cadastro_view(request):
     else:
         form = CadastroForm()
     return render(request, 'usuarios/cadastro.html', {'form': form})
+
+
+@login_required(login_url='login')
+def cadastro_pessoa(request):
+    if request.method == 'POST':
+        pessoa_form = PessoaForm(request.POST)
+        endereco_form = EnderecoForm(request.POST)
+
+        if pessoa_form.is_valid() and endereco_form.is_valid():
+            endereco = endereco_form.save()
+            pessoa = pessoa_form.save(commit=False)
+            pessoa.endereco = endereco
+            pessoa.usuario = request.user  # Ajuste conforme seu modelo
+            pessoa.save()
+
+            messages.success(request, 'Pessoa cadastrada com sucesso!')
+            return redirect('lista_pessoas')
+        else:
+            messages.error(request, 'Por favor, corrija os erros no formulário.')
+    else:
+        pessoa_form = PessoaForm()
+        endereco_form = EnderecoForm()
+
+    context = {
+        'pessoa_form': pessoa_form,
+        'endereco_form': endereco_form,
+    }
+    return render(request, 'usuarios/cadastro_pessoa.html', context)
 
 
 class CustomPasswordResetView(PasswordResetView):

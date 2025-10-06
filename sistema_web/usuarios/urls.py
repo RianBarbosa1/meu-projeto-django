@@ -18,6 +18,8 @@ urlpatterns = [
     path('erro500/', views.erro_500_teste, name='erro500'),
     
     path('pessoas/', views.lista_pessoas, name='lista_pessoas'),
+    
+    path('pessoa/cadastro/', views.cadastro_pessoa, name='cadastro_pessoa'),
 
     # Recuperar senha - formulário para digitar email
     path('password_reset/', auth_views.PasswordResetView.as_view(
