@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Vendas com Vue.js</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+    /* ------------------------------ */
+    /* ESTILOS GLOBAIS E ESTRUTURA */
+    /* ------------------------------ */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f6; /* Fundo suave */
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+
+    #app {
+        max-width: 1000px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+        color: #007bff; /* Azul primário */
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        margin-top: 30px;
+    }
+
+    /* ------------------------------ */
+    /* ESTILOS DOS PRODUTOS */
+    /* ------------------------------ */
+    .produto {
+        border: 1px solid #e0e0e0;
+        background-color: #f9f9f9;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .produto:hover {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .produto h3 {
+        margin: 0 0 5px 0;
+        color: #333;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .produto p {
+        margin: 0;
+        font-weight: bold;
+        color: #28a745; /* Cor verde para o preço */
+    }
+
+    /* ------------------------------ */
+    /* ESTILOS DOS BOTÕES */
+    /* ------------------------------ */
+    button {
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: #28a745; /* Verde de sucesso */
+        color: white;
+        border: none;
+        border-radius: 50px; /* Botão arredondado */
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.1s;
+    }
+
+    button:hover {
+        background-color: #218838;
+        transform: translateY(-1px);
+    }
+
+    /* ------------------------------ */
+    /* ESTILOS DO CARRINHO */
+    /* ------------------------------ */
+    .carrinho h2 {
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+    }
+
+    .carrinho ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .carrinho li {
+        padding: 8px 0;
+        border-bottom: 1px dashed #ddd;
+    }
+    
+    .carrinho h3 {
+        margin-top: 15px;
+        color: #dc3545; /* Cor de destaque para o total */
+    }
+
+    /* Estilo para a opção de pagamento (v-if) */
+    .opcoes-pagamento {
+        margin-top: 30px;
+        padding: 25px;
+        border: 2px solid #ffc107; /* Borda amarela de atenção */
+        background-color: #fffbe6;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .opcoes-pagamento button {
+        background-color: #ffc107;
+        color: #333;
+        margin-top: 10px;
+    }
+
+    .opcoes-pagamento button:hover {
+        background-color: #e0a800;
+    }
+
+    /* ------------------------------ */
+    /* ESTILOS DOS ITENS DO CARRINHO (Novo) */
+    /* ------------------------------ */
+    .item-carrinho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed #ccc;
+    }
+    
+    .item-info {
+        display: flex;
+        justify-content: space-between;
+        width: 70%;
+        font-size: 1.1em;
+    }
+
+    .subtotal {
+        font-weight: bold;
+        color: #dc3545; /* Vermelho para destaque */
+    }
+
+    .btn-remover {
+        background-color: #dc3545; /* Vermelho */
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+    
+    .btn-remover:hover {
+        background-color: #c82333;
+    }
+
+    .total-final {
+        text-align: right;
+        font-size: 1.5em;
+        color: #007bff;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+
+    <div id="app">
+        <h1>Nossos Produtos</h1>
+
+        <div v-for="(produto, index) in produtos" :key="index" class="produto">
+            <div>
+                <h3 :title="produto.descricao">{{ produto.nome }}</h3>
+                <p>Valor: R$ {{ produto.valor.toFixed(2).replace('.', ',') }}</p>
+            </div>
+            <button @click="adicionarAoCarrinho(produto)">Adicionar ao Carrinho</button>
+        </div>
+
+        <hr>
+
+        <h2>Carrinho de Compras</h2>
+
+<p v-if="carrinho.length === 0">Seu carrinho está vazio.</p>
+
+<div v-show="carrinho.length > 0">
+    <div v-for="(item, itemIndex) in carrinho" :key="itemIndex" class="item-carrinho">
+        <div class="item-info">
+            <span>
+                {{ item.produto.nome }} ({{ item.quantidade }}x)
+            </span>
+            <span class="subtotal">
+                R$ {{ (item.produto.valor * item.quantidade).toFixed(2).replace('.', ',') }}
+            </span>
+        </div>
+        <button @click="removerDoCarrinho(itemIndex)" class="btn-remover">Remover</button>
+    </div>
+
+    <h3 class="total-final">Total: R$ {{ totalCarrinho.toFixed(2).replace('.', ',') }}</h3>
+</div>
+
+    </div>
+
+    <script>
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+        setup() {
+            const produtos = ref([
+                { id: 1, nome: 'Laptop Gamer', valor: 5500.00, descricao: 'Potente laptop para jogos.' },
+                { id: 2, nome: 'Monitor 4K', valor: 1800.00, descricao: 'Monitor com alta resolução.' },
+                { id: 3, nome: 'Teclado Mecânico', valor: 450.00, descricao: 'Teclado com switches táteis.' },
+            ]);
+
+            // Carrinho agora armazena { produto, quantidade }
+            const carrinho = ref([]);
+
+            // --- MÉTODOS V-ON ---
+
+            function adicionarAoCarrinho(produto) {
+                // 1. Verifica se o item já existe no carrinho
+                const itemExistente = carrinho.value.find(item => item.produto.id === produto.id);
+
+                if (itemExistente) {
+                    // Se existir, incrementa a quantidade
+                    itemExistente.quantidade++;
+                } else {
+                    // Se não existir, adiciona o novo item com quantidade 1
+                    carrinho.value.push({
+                        produto: produto,
+                        quantidade: 1
+                    });
+                }
+                console.log(`Adicionado: ${produto.nome}. Quantidade atual: ${itemExistente ? itemExistente.quantidade : 1}`);
+            }
+
+            function removerDoCarrinho(index) {
+                // Remove o item do array 'carrinho' baseado no seu índice
+                carrinho.value.splice(index, 1);
+            }
+
+            // --- PROPRIEDADE COMPUTADA ---
+
+            const totalCarrinho = computed(() => {
+                return carrinho.value.reduce((soma, item) => {
+                    // Soma (valor * quantidade) de cada item
+                    return soma + (item.produto.valor * item.quantidade);
+                }, 0);
+            });
+
+            // Retorna as variáveis e métodos
+            return {
+                produtos,
+                carrinho,
+                adicionarAoCarrinho,
+                removerDoCarrinho, // Novo método
+                totalCarrinho
+            }
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
