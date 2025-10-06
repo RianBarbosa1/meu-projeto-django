@@ -53,6 +53,30 @@ Modelar e cadastrar dados de uma pessoa utilizando Django e exibir os dados em u
 
 ---
 
+### 📘 Exercício 3
+Neste exercício, foi implementado um sistema de cadastro e visualização de pessoas e seus endereços utilizando Django.
+
+Funcionalidades implementadas:
+
+Models (models.py):
+
+Foi criado um atributo usuario no modelo Pessoa que faz referência a um usuário do sistema (ForeignKey para User).
+
+Criado o modelo Endereco com os campos: rua, numero, bairro, cidade, estado e cep.
+
+Estabelecido o relacionamento entre Pessoa e Endereco.
+
+Views (views.py):
+
+Obtenção dos dados das pessoas cadastradas, incluindo nome, usuário vinculado e endereço associado.
+
+Passagem dessas informações para o template HTML.
+
+Template (index.html):
+
+Listagem das pessoas cadastradas junto com seus respectivos usuários e endereços.
+---
+
 ## 🚀 Tecnologias Utilizadas
 
 - Python 3
