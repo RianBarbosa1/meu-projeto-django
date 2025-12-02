@@ -1,0 +1,20 @@
+<h1>Perfil do Usuário</h1>
+
+{% if pessoa %}
+<p><strong>Nome:</strong> {{ pessoa.nome }}</p>
+<p><strong>CPF:</strong> {{ pessoa.cpf }}</p>
+<p><strong>Email:</strong> {{ pessoa.email }}</p>
+<p><strong>Telefone:</strong> {{ pessoa.telefone }}</p>
+<p><strong>Data de Nascimento:</strong> {{ pessoa.data_nascimento }}</p>
+<p><strong>RG:</strong> {{ pessoa.rg }}</p>
+
+{% if pessoa.endereco %}
+<h2>Endereço</h2>
+<p>{{ pessoa.endereco.rua }}, {{ pessoa.endereco.numero }}</p>
+<p>{{ pessoa.endereco.bairro }} - {{ pessoa.endereco.cidade }}/{{ pessoa.endereco.estado }}</p>
+<p>CEP: {{ pessoa.endereco.cep }}</p>
+{% endif %}
+
+{% else %}
+<p>Usuário não possui perfil cadastrado.</p>
+{% endif %}
